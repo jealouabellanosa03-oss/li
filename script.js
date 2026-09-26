@@ -7618,56 +7618,40 @@ document.addEventListener(
 // fully offline.
 // =========================================================
 
-const DEV_PHOTO_KEY =
-  'ccDeveloperPhoto';
-
+const DEV_PHOTO_KEY = 'ccDeveloperPhoto';
 
 function loadDeveloperPhoto() {
+    const img = document.getElementById('devPhotoImg');
+    const placeholder = document.getElementById('devPhotoPlaceholder');
+    const removeBtn = document.getElementById('devRemovePhotoBtn');
 
-  const img =
-    document.getElementById('devPhotoImg');
+    if (!img) return;
 
-  const placeholder =
-    document.getElementById('devPhotoPlaceholder');
+    // Default developer photo
+    const defaultPhoto = 'image/developer.png';
 
-  const removeBtn =
-    document.getElementById('devRemovePhotoBtn');
+    // Check saved custom photo
+    const savedPhoto = localStorage.getItem(DEV_PHOTO_KEY);
 
-  if (!img) {
-    return;
-  }
+    if (savedPhoto && savedPhoto.startsWith('data:image/')) {
+        img.src = savedPhoto;
+    } else {
+        // Always use the actual developer.png
+        img.src = defaultPhoto;
 
-  const saved =
-    localStorage.getItem('ccDeveloperPhoto');
+        // Remove invalid old saved value
+        localStorage.removeItem(DEV_PHOTO_KEY);
+    }
 
-  if (saved) {
-
-    // Custom photo
-    img.src = saved;
     img.style.display = 'block';
 
     if (placeholder) {
-      placeholder.style.display = 'none';
+        placeholder.style.display = 'none';
     }
 
     if (removeBtn) {
-      removeBtn.style.display = 'inline-flex';
+        removeBtn.style.display = savedPhoto ? 'block' : 'none';
     }
-
-  } else {
-
-    // KEEP DEFAULT PHOTO
-    // Do NOT remove src
-    img.style.display = 'block';
-
-    if (placeholder) {
-      placeholder.style.display = 'none';
-    }
-
-    if (removeBtn) {
-      removeBtn.style.display = 'none';
-    }
-  }
 }
 function handleDeveloperPhotoUpload(
   event
